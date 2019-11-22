@@ -1,5 +1,6 @@
 package com.example.weather;
 
+import android.app.AlertDialog;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +14,7 @@ import androidx.fragment.app.Fragment;
 
 import com.example.weather.bean.WeatherBean;
 import com.google.gson.Gson;
+import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
@@ -27,13 +29,14 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
     String url1 = "http://api.map.baidu.com/telematics/v3/weather?location=";
     String url2 = "&output=json&ak=FkPhtMBK0HTIQNh7gG4cNUttSTyr0nzo";
     private List<WeatherBean.ResultsBean.IndexBean> indexList;
+    String city;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_city_weather, container, false);
         initView(view);
-        //课堂
+        //可以通过activity传值获取到当前fragment加载的是那个地方天气预报
         Bundle bundle = getArguments();
         String city = bundle.getString("city");
         String url = url1 + city + url2;
@@ -59,12 +62,41 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
     public void parseShowData(String result) {
         //使用gson解析数据
         WeatherBean weatherBean = new Gson().fromJson(result, WeatherBean.class);
-        WeatherBean.ResultsBean resultBean=weatherBean.getResults().get(0);
+        WeatherBean.ResultsBean resultsBean = weatherBean.getResults().get(0);
         //获取指数休息集合列表
-        indexList=resultBean.getIndex();
-
-
-
+        indexList = resultsBean.getIndex();
+        //设置TextView
+        dateTv.setText(weatherBean.getDate());
+        cityTv.setText(resultsBean.getCurrentCity());
+        //获取今日天气情况
+        WeatherBean.ResultsBean.WeatherDataBean todayDataBean = resultsBean.getWeather_data().get(0);
+        windTv.setText(todayDataBean.getWind());
+        tempRangeTv.setText(todayDataBean.getTemperature());
+        conditionTv.setText(todayDataBean.getWeather());
+        //获取实时温度情况 需要处理字符串
+        String[] split = todayDataBean.getDate().split("：");
+        String todayTemp = split[1].replace(")", "");
+        tempTv.setText(todayTemp);
+        //设置显示的天气情况照片
+        Picasso.with(getActivity()).load(todayDataBean.getDayPictureUrl()).into(dayIv);
+        //获取未来3天的天气情况  加载到layout当中
+        List<WeatherBean.ResultsBean.WeatherDataBean> futureList = resultsBean.getWeather_data();
+        futureList.remove(0);
+        for (int i = 0; i < futureList.size(); i++) {
+            View itemView = LayoutInflater.from(getActivity()).inflate(R.layout.item_main_center, null);
+            itemView.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            futureLayout.addView(itemView);
+            TextView idateTv = itemView.findViewById(R.id.item_center_tv_date);
+            TextView iconTv = itemView.findViewById(R.id.item_center_tv_con);
+            TextView itemprangeTv = itemView.findViewById(R.id.item_center_tv_temp);
+            ImageView iIv = itemView.findViewById(R.id.item_center_iv);
+//          获取对应的位置的天气情况
+            WeatherBean.ResultsBean.WeatherDataBean dataBean = futureList.get(i);
+            idateTv.setText(dataBean.getDate());
+            iconTv.setText(dataBean.getWeather());
+            itemprangeTv.setText(dataBean.getTemperature());
+            Picasso.with(getActivity()).load(dataBean.getDayPictureUrl()).into(iIv);
+        }
 
     }
 
@@ -94,21 +126,46 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
 
     @Override
     public void onClick(View v) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         switch (v.getId()) {
             case R.id.frag_index_tv_dress:
-
+                builder.setTitle("穿衣服指数");
+                WeatherBean.ResultsBean.IndexBean indexBean = indexList.get(0);
+                String msg = indexBean.getZs() + "\n" + indexBean.getDes();
+                builder.setMessage(msg);
+                builder.setPositiveButton("确认", null);
                 break;
             case R.id.frag_index_tv_washcar:
-
+                builder.setTitle("洗车指数");
+                indexBean = indexList.get(1);
+                msg = indexBean.getZs() + "\n" + indexBean.getDes();
+                builder.setMessage(msg);
+                builder.setPositiveButton("确认", null);
                 break;
             case R.id.frag_index_tv_cold:
-
+                builder.setTitle("感冒服指数");
+                indexBean = indexList.get(2);
+                msg = indexBean.getZs() + "\n" + indexBean.getDes();
+                builder.setMessage(msg);
+                builder.setPositiveButton("确认", null);
                 break;
             case R.id.frag_index_tv_sport:
-
+                builder.setTitle("运动服指数");
+                indexBean = indexList.get(3);
+                msg = indexBean.getZs() + "\n" + indexBean.getDes();
+                builder.setMessage(msg);
+                builder.setPositiveButton("确认", null);
+                break;
+            case R.id.frag_index_tv_rays:
+                builder.setTitle("紫外线指数");
+                indexBean = indexList.get(4);
+                msg = indexBean.getZs() + "\n" + indexBean.getDes();
+                builder.setMessage(msg);
+                builder.setPositiveButton("确认", null);
                 break;
 
         }
+        builder.create().show();
 
 
     }

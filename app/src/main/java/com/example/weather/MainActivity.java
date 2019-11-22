@@ -1,14 +1,123 @@
 package com.example.weather;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
 
 import android.os.Bundle;
+import android.view.View;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.ArrayList;
+import java.util.List;
+
+public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+    ImageView addCityIv, moreIv;
+    LinearLayout pointLayout;
+    ViewPager mainVp;
+    //ViewPager的数据源
+    List<Fragment> fragmentList;
+    //表示需要显示的城市的集合
+    List<String> cityList;
+    //表示ViewPager的页数指数器显示集合
+    List<ImageView> imagList;
+    private CityFragmentPagerAdapter adapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        addCityIv = findViewById(R.id.main_iv_add);
+        moreIv = findViewById(R.id.main_iv_more);
+        pointLayout = findViewById(R.id.main_layout_point);
+        mainVp = findViewById(R.id.main_vp);
+        //添加点击事件
+        addCityIv.setOnClickListener(this);
+        moreIv.setOnClickListener(this);
+        fragmentList = new ArrayList<>();
+        cityList = new ArrayList<>();
+        imagList = new ArrayList<>();
+        if (cityList.size() == 0) {
+            cityList.add("上海");
+            cityList.add("郑州");
+            cityList.add("沈阳");
+
+        }
+        //初始化ViewPager页面的方法
+        initPager();
+        adapter = new CityFragmentPagerAdapter(getSupportFragmentManager(), fragmentList);
+        mainVp.setAdapter(adapter);
+        //创建小园点指示器
+        initPoint();
+        //设置最后一个城市信息
+        mainVp.setCurrentItem(fragmentList.size() - 1);
+        //设置ViewPager页面监听
+        setPagerListener();
+
+    }
+
+    private void setPagerListener() {
+        /*设置监听事件 */
+        mainVp.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                //
+                for (int i=0;i<imagList.size();i++){
+                    imagList.get(i).setImageResource(R.mipmap.a1);
+                }
+                imagList.get(position).setImageResource(R.mipmap.a2);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+    }
+
+    private void initPoint() {
+        //创建小圆点 V
+        for (int i = 0; i < fragmentList.size(); i++) {
+            ImageView pIv = new ImageView(this);
+            pIv.setImageResource(R.mipmap.a1);
+            pIv.setLayoutParams(new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+            LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) pIv.getLayoutParams();
+            lp.setMargins(0, 0, 20, 0);
+            imagList.add(pIv);
+            pointLayout.addView(pIv);
+        }
+        imagList.get(imagList.size() - 1).setImageResource(R.mipmap.a2);
+
+
+    }
+
+    private void initPager() {
+        for (int i = 0; i < cityList.size(); i++) {
+            CityWeatherFragment cwFrag = new CityWeatherFragment();
+            Bundle bundle = new Bundle();
+            bundle.putString("city", cityList.get(i));
+            cwFrag.setArguments(bundle);
+            fragmentList.add(cwFrag);
+
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.main_iv_add:
+                break;
+            case R.id.main_iv_more:
+                break;
+        }
+
     }
 }

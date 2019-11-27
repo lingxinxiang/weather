@@ -1,4 +1,4 @@
-package com.example.weather;
+package com.example.weather.base;
 
 import androidx.fragment.app.Fragment;
 

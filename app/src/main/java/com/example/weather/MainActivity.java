@@ -1,13 +1,17 @@
 package com.example.weather;
 
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.viewpager.widget.ViewPager;
-
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.example.weather.city_manager.CityManagerActivity;
+import com.example.weather.db.DBManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +41,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addCityIv.setOnClickListener(this);
         moreIv.setOnClickListener(this);
         fragmentList = new ArrayList<>();
-        cityList = new ArrayList<>();
+        cityList = DBManager.queryAllCityName();//获取数据库包含的城市信息
         imagList = new ArrayList<>();
         if (cityList.size() == 0) {
             cityList.add("上海");
@@ -69,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public void onPageSelected(int position) {
                 //
-                for (int i=0;i<imagList.size();i++){
+                for (int i = 0; i < imagList.size(); i++) {
                     imagList.get(i).setImageResource(R.mipmap.a1);
                 }
                 imagList.get(position).setImageResource(R.mipmap.a2);
@@ -112,12 +116,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     @Override
     public void onClick(View v) {
+        Intent intent = new Intent();
         switch (v.getId()) {
             case R.id.main_iv_add:
+                intent.setClass(this, CityManagerActivity.class);
                 break;
             case R.id.main_iv_more:
                 break;
         }
-
+        startActivity(intent);
     }
 }

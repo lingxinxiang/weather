@@ -2,6 +2,7 @@ package com.example.weather;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +13,9 @@ import android.widget.TextView;
 
 import androidx.fragment.app.Fragment;
 
+import com.example.weather.base.BaseFragment;
 import com.example.weather.bean.WeatherBean;
+import com.example.weather.db.DBManager;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
@@ -38,7 +41,7 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
         initView(view);
         //可以通过activity传值获取到当前fragment加载的是那个地方天气预报
         Bundle bundle = getArguments();
-        String city = bundle.getString("city");
+        city = bundle.getString("city");
         String url = url1 + city + url2;
         //获取父类获取方法
         loadData(url);
@@ -51,12 +54,21 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
     public void onSuccess(String result) {
         //解析展示数据
         parseShowData(result);
-
+        //更新数据
+        int i = DBManager.updateInfoByCity(city, result);
+        if (i <= 0) {
+            //更新数据库失败 没有城市信息，添加这个城市
+            DBManager.addCityInfo(city, result);
+        }
     }
 
     @Override
     public void onError(Throwable ex, boolean isOnCallback) {
-
+        //数据库当中查找上一次信息显示Fragment当中
+        String s = DBManager.queryInfoByCity(city);
+        if (!TextUtils.isEmpty(s)) {
+            parseShowData(s);
+        }
     }
 
     public void parseShowData(String result) {

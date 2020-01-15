@@ -2,6 +2,8 @@ package com.example.weather;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -45,10 +47,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         imagList = new ArrayList<>();
         if (cityList.size() == 0) {
             cityList.add("上海");
-            cityList.add("郑州");
-            cityList.add("沈阳");
 
         }
+        /*
+        因为可能搜索页面点击跳转此页面，会转值，所以此处获取一下*/
+        try {
+            Intent intent=getIntent();
+            String city=intent.getStringExtra("city");
+            if (!cityList.contains(city)&&!TextUtils.isEmpty(city
+            )){
+                cityList.add(city);
+            }
+        }catch (Exception e){
+            Log.i("animee","程序出现问题了!!");
+        }
+
+
         //初始化ViewPager页面的方法
         initPager();
         adapter = new CityFragmentPagerAdapter(getSupportFragmentManager(), fragmentList);
@@ -122,8 +136,39 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 intent.setClass(this, CityManagerActivity.class);
                 break;
             case R.id.main_iv_more:
+                intent.setClass(this, MoreActivity.class);
                 break;
         }
         startActivity(intent);
+
+
+
+
+    }
+
+    /* 当页面重写加载时会调用的函数，这个函数在页面获取焦点之前进行调用，此处完成ViewPager页数的更新*/
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        //获取数据库当中还剩下的城市集合
+        List<String>list=DBManager.queryAllCityName();
+        if (list.size()==0){
+            list.add("上海");
+        }
+        cityList.clear(); //重新加载之前，清空原本数据源
+        cityList.addAll(list);
+        //剩余城市也要创建
+        fragmentList.clear();
+        initPager();
+        adapter.notifyDataSetChanged();
+        //页面数量发生改变，指示器的数量也会发生变化，重写设置添加指示器
+        imagList.clear();
+        pointLayout.removeAllViews();//将布局当中所以元素全部移除
+        initPoint();
+        mainVp.setCurrentItem(fragmentList.size()-1);
+
+        
+
+
     }
 }

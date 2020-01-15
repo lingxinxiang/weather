@@ -21,6 +21,7 @@ public class CityManagerActivity extends AppCompatActivity implements View.OnCli
     ImageView addIv, backIv, deleteIv;
     ListView cityLv;
     List<DatabaseBean> mDatas; //显示列表数据源
+    private CityManagerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +37,18 @@ public class CityManagerActivity extends AppCompatActivity implements View.OnCli
         deleteIv.setOnClickListener(this);
         backIv.setOnClickListener(this);
         //设置适配器
+        adapter=new CityManagerAdapter(this,mDatas);
+        cityLv.setAdapter(adapter);
+    }
 
-
+    /*获取数据库当中真实数据源，添加到原有数据源当中，提示适配器更新*/
+    @Override
+    protected void onResume() {
+        super.onResume();
+        List<DatabaseBean>list=DBManager.queryAllInfo();
+        mDatas.clear();
+        mDatas.addAll(list);
+        adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -51,7 +62,6 @@ public class CityManagerActivity extends AppCompatActivity implements View.OnCli
                 } else {
                     Toast.makeText(this, "存储城市数量已达上限，请删除后再添加", Toast.LENGTH_SHORT).show();
                 }
-
                 break;
             case R.id.city_iv_back:
                 finish();

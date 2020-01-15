@@ -5,7 +5,6 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="5dp">
-
     <androidx.cardview.widget.CardView
         android:id="@+id/item_city_cv"
         android:layout_width="match_parent"
@@ -15,11 +14,9 @@
         app:cardCornerRadius="10dp"
         app:cardElevation="5dp"
         app:contentPadding="10dp">
-
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
             <ImageView
                 android:id="@+id/item_city_line1"
                 android:layout_width="match_parent"
@@ -28,7 +25,6 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:background="#808A87" />
-
             <TextView
                 android:id="@+id/item_city_tv_temp"
                 android:layout_width="wrap_content"
@@ -37,7 +33,6 @@
                 android:layout_marginRight="20dp"
                 android:text="12℃"
                 android:textSize="40sp" />
-
             <TextView
                 android:id="@+id/item_city_tv_city"
                 android:layout_width="wrap_content"
@@ -46,7 +41,6 @@
                 android:text="北京"
                 android:textSize="20sp"
                 android:textStyle="bold" />
-
             <TextView
                 android:id="@+id/item_city_tv_condition"
                 android:layout_width="wrap_content"
@@ -54,7 +48,6 @@
                 android:layout_below="@id/item_city_line1"
                 android:text="天气：晴"
                 android:textSize="16sp" />
-
             <TextView
                 android:id="@+id/item_city_line2"
                 android:layout_width="2dp"
@@ -83,7 +76,6 @@
                 android:layout_marginRight="20dp"
                 android:text="16~9℃"
                 android:textSize="16sp" />
-
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>

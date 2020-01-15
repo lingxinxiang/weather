@@ -40,22 +40,26 @@ public class CityManagerAdapter extends BaseAdapter {
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
-        ViewHolder holder=null;
-        if (convertView==null){
-            convertView= LayoutInflater.from(context).inflate(R.layout.item_city_manager,null);
-            holder=new ViewHolder(convertView);
+        ViewHolder holder = null;
+        if (convertView == null) {
+            convertView = LayoutInflater.from(context).inflate(R.layout.item_city_manager, null);
+            holder = new ViewHolder(convertView);
             convertView.setTag(holder);
-        }else {
-            holder= (ViewHolder) convertView.getTag();
+        } else {
+            holder = (ViewHolder) convertView.getTag();
         }
-        DatabaseBean bean=mDatas.get(position);
+        DatabaseBean bean = mDatas.get(position);
         holder.cityTv.setText(bean.getCity());
-        WeatherBean weatherBean=new Gson().fromJson(bean.getContent(),WeatherBean.class);
+        WeatherBean weatherBean = new Gson().fromJson(bean.getContent(), WeatherBean.class);
         //获取今日天气情况
-        WeatherBean.ResultsBean.WeatherDataBean dataBean=weatherBean.getResults().get(0).getWeather_data().get(0);
-        holder.conTv.setText("天气："+dataBean.getWeather());
-
-        return null;
+        WeatherBean.ResultsBean.WeatherDataBean dataBean = weatherBean.getResults().get(0).getWeather_data().get(0);
+        holder.conTv.setText("天气：" + dataBean.getWeather());
+        String[] split = dataBean.getDate().split("：");
+        String todayTemp = split[1].replace("）", "");
+        holder.currentTempTv.setText(todayTemp);
+        holder.windTv.setText(dataBean.getWind());
+        holder.tempRangeTv.setText(dataBean.getTemperature());
+        return convertView;
     }
 
     class ViewHolder {
@@ -67,7 +71,7 @@ public class CityManagerAdapter extends BaseAdapter {
             currentTempTv = itemView.findViewById(R.id.item_city_tv_temp);
             windTv = itemView.findViewById(R.id.item_city_wind);
             tempRangeTv = itemView.findViewById(R.id.item_city_temprange);
+
         }
     }
-
 }

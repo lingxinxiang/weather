@@ -50,6 +50,7 @@ public class DBManager {
             String content = cursor.getString(cursor.getColumnIndex("content"));
             return content;
         }
+        
         return null;
     }
 
@@ -61,5 +62,32 @@ public class DBManager {
         return count;
     }
 
+    /* 查询数据库当中全部信息*/
+    public static List<DatabaseBean> queryAllInfo() {
+        Cursor cursor = database.query("info", null, null, null, null, null, null);
+        List<DatabaseBean> list = new ArrayList<>();
+        while (cursor.moveToNext()) {
+            int id = cursor.getInt(cursor.getColumnIndex("_id"));
+            String city = cursor.getString(cursor.getColumnIndex("city"));
+            String content = cursor.getString(cursor.getColumnIndex("content"));
+            DatabaseBean bean = new DatabaseBean(id, city, content);
+            list.add(bean);
+        }
+        return list;
+    }
+/*
+根据城市名称，删除这个城市在数据库当中的数据
+ */
+    public static int deleteInfByCity(String city) {
+        return database.delete("info", "city=?", new String[]{city});
+    }
+    /*
+    删除表当中所有的数据信息
+     */
+    public static void deleteAllInfo(){
+        String sql="delete from iffo";
+        database.execSQL(sql);
+
+    }
 
 }

@@ -35,6 +35,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
         addCityIv = findViewById(R.id.main_iv_add);
         moreIv = findViewById(R.id.main_iv_more);
         pointLayout = findViewById(R.id.main_layout_point);
@@ -166,9 +169,5 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         pointLayout.removeAllViews();//将布局当中所以元素全部移除
         initPoint();
         mainVp.setCurrentItem(fragmentList.size()-1);
-
-        
-
-
     }
 }

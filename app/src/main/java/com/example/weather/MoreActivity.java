@@ -66,9 +66,21 @@ public class MoreActivity extends AppCompatActivity implements View.OnClickListe
 
                         break;
                     case R.id.more_rb_pink:
+                        if (bg == 1) {
+                            Toast.makeText(MoreActivity.this, "你选择的为当前背景，无需改变！", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        editor.putInt("bg",1);
+                        editor.commit();
 
                         break;
                     case R.id.more_rb_blue:
+                        if (bg == 2) {
+                            Toast.makeText(MoreActivity.this, "你选择的为当前背景，无需改变！", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
+                        editor.putInt("bg",2);
+                        editor.commit();
 
                         break;
                 }

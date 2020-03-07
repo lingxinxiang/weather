@@ -1,6 +1,8 @@
 package com.example.weather;
 
 import android.app.AlertDialog;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -33,12 +35,32 @@ public class CityWeatherFragment extends BaseFragment implements View.OnClickLis
     String url2 = "&output=json&ak=FkPhtMBK0HTIQNh7gG4cNUttSTyr0nzo";
     private List<WeatherBean.ResultsBean.IndexBean> indexList;
     String city;
+    private SharedPreferences pref;
+    private int bgNum;
+    //换壁纸的函数
+    public void exchangeBg(){
+        pref = getActivity().getSharedPreferences("bg_pref", Context.MODE_PRIVATE);
+        bgNum = pref.getInt("bg", 2);
+        switch (bgNum) {
+            case 0:
+                outLayout.setBackgroundResource(R.mipmap.bg);
+                break;
+            case 1:
+                outLayout.setBackgroundResource(R.mipmap.bg2);
+                break;
+            case 2:
+                outLayout.setBackgroundResource(R.mipmap.bg3);
+                break;
+        }
+
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_city_weather, container, false);
         initView(view);
+        exchangeBg();
         //可以通过activity传值获取到当前fragment加载的是那个地方天气预报
         Bundle bundle = getArguments();
         city = bundle.getString("city");

@@ -1,12 +1,14 @@
 package com.example.weather;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -21,6 +23,7 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     ImageView addCityIv, moreIv;
     LinearLayout pointLayout;
+    RelativeLayout outLayout;
     ViewPager mainVp;
     //ViewPager的数据源
     List<Fragment> fragmentList;
@@ -29,18 +32,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     //表示ViewPager的页数指数器显示集合
     List<ImageView> imagList;
     private CityFragmentPagerAdapter adapter;
+    private SharedPreferences pref;
+    private int bgNum;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-
-
         addCityIv = findViewById(R.id.main_iv_add);
         moreIv = findViewById(R.id.main_iv_more);
         pointLayout = findViewById(R.id.main_layout_point);
+        outLayout=findViewById(R.id.main_out_layout);
+        exchangeBg();
         mainVp = findViewById(R.id.main_vp);
         //添加点击事件
         addCityIv.setOnClickListener(this);
@@ -66,6 +70,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
 
 
+
         //初始化ViewPager页面的方法
         initPager();
         adapter = new CityFragmentPagerAdapter(getSupportFragmentManager(), fragmentList);
@@ -78,6 +83,26 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setPagerListener();
 
     }
+
+
+    //换壁纸的函数
+    public void exchangeBg(){
+        pref = getSharedPreferences("bg_pref", MODE_PRIVATE);
+        bgNum = pref.getInt("bg", 2);
+        switch (bgNum) {
+            case 0:
+                outLayout.setBackgroundResource(R.mipmap.bg);
+                break;
+            case 1:
+                outLayout.setBackgroundResource(R.mipmap.bg2);
+                break;
+            case 2:
+                outLayout.setBackgroundResource(R.mipmap.bg3);
+                break;
+        }
+
+    }
+
 
     private void setPagerListener() {
         /*设置监听事件 */

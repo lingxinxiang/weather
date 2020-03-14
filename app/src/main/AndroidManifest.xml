@@ -13,6 +13,7 @@
         <activity android:name=".city_manager.DeleteCityActivity"></activity>
         <activity android:name=".city_manager.SearchCityActivity" />
         <activity android:name=".city_manager.CityManagerActivity" />
+
         <activity android:name=".MoreActivity"/>
         <activity android:name=".MainActivity">
 

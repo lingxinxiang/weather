@@ -135,7 +135,6 @@ public class MoreActivity extends AppCompatActivity implements View.OnClickListe
                 Intent intent = new Intent(MoreActivity.this, MainActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
-
             }
         }).setNegativeButton("取消", null);
         builder.create().show();

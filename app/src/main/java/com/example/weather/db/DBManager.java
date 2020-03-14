@@ -85,7 +85,7 @@ public class DBManager {
     删除表当中所有的数据信息
      */
     public static void deleteAllInfo(){
-        String sql="delete from iffo";
+        String sql="delete from info";
         database.execSQL(sql);
 
     }
